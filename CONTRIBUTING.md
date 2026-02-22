@@ -13,6 +13,7 @@ Thank you for your interest in contributing to Sablier! This guide will help you
   - [Contribution Guidelines](#contribution-guidelines)
     - [Conventional Commits](#conventional-commits)
   - [Development Guide](#development-guide)
+    - [Setup](#setup)
     - [Compiling](#compiling)
       - [Build the Binary](#build-the-binary)
       - [Build for Specific Platform](#build-for-specific-platform)
@@ -145,7 +146,7 @@ GOOS=windows GOARCH=amd64 make build
 ```bash
 # Build and run
 make build
-./sablier_draft_linux-amd64 start --help
+./sablier start --help
 
 # Or run directly
 go run cmd/sablier/sablier.go start --provider.name=docker
@@ -154,7 +155,7 @@ go run cmd/sablier/sablier.go start --provider.name=docker
 #### Build Docker Image
 
 ```bash
-docker build -t sablier:dev .
+make docker
 ```
 
 ---

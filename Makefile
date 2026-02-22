@@ -1,33 +1,30 @@
 .PHONY: run gen build test lint fmt docker docs
 
-GO_FLAGS := nomsgpack,remote,exclude_graphdriver_btrfs,containers_image_openpgp
+export GOFLAGS=-tags=nomsgpack,remote,exclude_graphdriver_btrfs,containers_image_openpgp
 
 run:
-	go run -tags="$(GO_FLAGS)" ./cmd/sablier start --storage.file=state.json --logging.level=debug
+	go run ./cmd/sablier start --storage.file=state.json --logging.level=debug
 
 gen:
 	go generate -v ./...
 
 build:
-	go build -tags="$(GO_FLAGS)" -v ./cmd/sablier
+	goreleaser build --single-target --snapshot --clean --output .
 
 test:
-	go test -tags="$(GO_FLAGS)" ./...
+	go test ./...
 
 lint:
-	golangci-lint run --build-tags="$(GO_FLAGS)"
+	golangci-lint run
 
 fix:
-	golangci-lint run --build-tags="$(GO_FLAGS)" --fix
+	golangci-lint run --fix
 
 fmt:
 	golangci-lint fmt ./...
 
-BUILDTIME := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-VERSION = draft
-GIT_REVISION := $(shell git rev-parse --short HEAD)
 docker:
-	docker build --build-arg BUILDTIME=$(BUILDTIME) --build-arg VERSION=$(VERSION) --build-arg REVISION=$(GIT_REVISION) -t sablierapp/sablier:local .
+	goreleaser release --snapshot --clean --skip=publish
 
 docs:
 	npx --yes docsify-cli serve docs
